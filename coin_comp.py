@@ -159,6 +159,11 @@ def update_output(n_clicks,):
 
     figure = go.Figure(data=data, layout=layout)
     # print('processing figure...')
+         figure.update_layout(
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font_color='black'
+    )
     return figure
 # figure.show()
 # ??figure displays but the next print statement never gets reached
