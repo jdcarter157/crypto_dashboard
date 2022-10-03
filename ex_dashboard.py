@@ -106,5 +106,11 @@ def update_output(n_clicks, value):
     # CREATING FIGURE FOR WEB DISPLAY
     fig = px.scatter(pd1,
                   x='cdate', y='price' , trendline='ols')
+    
+    fig.update_layout(
+        plot_bgcolor='white',
+        paper_bgcolor='white',
+        font_color='black'
+    )
     return fig
     # return p1
