@@ -145,6 +145,8 @@ def update_output(n_clicks,):
     for group, dataframe in groups:
         # SORTING VALS BY DATE
         dataframe = dataframe.sort_values(by=['cdate'])
+        dataframe['p_change']=dataframe.groupby('cname')['price'].pct_change(-1)
+
         # print(dataframe)
         trace = go.Scatter(x=dataframe.cdate.tolist(),
                        y=dataframe.p_change.tolist(),
