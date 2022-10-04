@@ -95,7 +95,7 @@ dash.register_page(__name__,)
 
 # HTML COMPONENTS AND DISPLAYING SLOPES FOR EACH COIN
 layout = html.Div([
-    html.H4('VERSUS'),
+    html.H4('%%VERSUS'),
     dcc.Graph(id="graph5", figure={"layout": {"height": 300, "width": 700}, }),
     html.H4("LTC slope ="+slope_ltc),
     html.H4("BLTC slope =" + slope_bltc),
@@ -115,14 +115,11 @@ layout = html.Div([
 @dash.callback(
     dash.dependencies.Output('graph5', 'figure'),
     [dash.dependencies.Input('button-example-5', 'n_clicks')],
-    # [dash.dependencies.Input('input-box5', 'value')],
-    # [dash.dependencies.State('input-box4', 'value')],
-    # [dash.dependencies.State('input-box5', 'value')]
-# ]
+
 )
 #CHART FUNC
 def update_output(n_clicks,):
-    print(" number of clicks", n_clicks)
+    # print(" number of clicks", n_clicks)
     mycursor = mydb.cursor(buffered=True)
 
     mycursor.execute("SELECT * from coin_data limit 1000")
@@ -132,8 +129,9 @@ def update_output(n_clicks,):
     pd1 = pd.DataFrame(myresult, columns=['id', 'cname', 'cdate', 'price', 'lows', 'highs'])
     # print(pd1)
     pd1['cdate'] = pd.to_datetime(pd1['cdate'])
-    # pd1['cdate'] = pd1['cdate'].apply(lambda x: x.toordinal())
-    pd1['p_change']=pd1['price'].pct_change()
+
+
+
 
     # GROUPING DATA BY COIN NAME
     groups = pd1.groupby(by='cname')
@@ -143,11 +141,15 @@ def update_output(n_clicks,):
     colors = ['red', 'blue', 'green']
 
     for group, dataframe in groups:
+
+
+
         # SORTING VALS BY DATE
         dataframe = dataframe.sort_values(by=['cdate'])
+        # CREATING P_CHANGE COLLUMN,GROUPING BY CNAME AND APPLYING FUNC TO PRICE
         dataframe['p_change']=dataframe.groupby('cname')['price'].pct_change(-1)
-
-        # print(dataframe)
+        # print("pd1",pd1)
+        # print("dataframe",dataframe)
         trace = go.Scatter(x=dataframe.cdate.tolist(),
                        y=dataframe.p_change.tolist(),
                        marker=dict(color=colors[len(data)]),
@@ -158,11 +160,11 @@ def update_output(n_clicks,):
     layout = go.Layout(xaxis={'title': 'Time'},
                    yaxis={'title': 'Percent Change'},
                    margin={'l': 40, 'b': 40, 't': 50, 'r': 50},
-                   hovermode='closest')
+                   hovermode='x')
 
     figure = go.Figure(data=data, layout=layout)
     # print('processing figure...')
-          figure.update_layout(
+    figure.update_layout(
         plot_bgcolor='white',
         paper_bgcolor='white',
         font_color='black'
