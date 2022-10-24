@@ -1,0 +1,196 @@
+from sklearn.linear_model import LinearRegression
+
+
+import dash
+
+
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import json
+import os
+import pandas as pd
+import numpy as np
+import math
+import time
+from datetime import datetime
+import mysql
+import mysql.connector
+
+
+
+from dash import Dash, dcc, html, Input, Output
+import plotly.express as px
+
+import random
+
+# now = datetime.now()
+
+ # DB CONN
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+
+    database="ecoins"
+)
+# ADDING TO PAGES FOR FLASK
+
+dash.register_page(__name__,)
+def update_city_selected(input_value):
+    return f'You selected: {input_value}'
+
+# HTML COMPONENTS
+layout = html.Div([
+    html.H4(children='Simple Linear Regression',
+            style={
+                'textAlign':'center'
+            }),
+    dcc.Graph(id="graph_4", figure={"layout": {"height": 300, "width": 700}, }),
+
+
+    html.Div(id='output-container-button',
+             children=''),
+    dcc.Input(id='input-box3', type='text'),
+    dcc.Input(id='date1', type='text', value='2022-06-21'),
+    dcc.Input(id='date2', type='text', value='2022-06-22'),
+    html.Button(id='Submit1', children='Submit'),
+
+    dcc.Input(id='input-box4', type='text'),
+    dcc.Input(id='date3', type='text', value='2022-06-21'),
+    dcc.Input(id='date4', type='text', value='2022-06-22'),
+    html.Button(id='Submit2', children='Submit'),
+
+    dcc.Input(id='input-box5', type='text'),
+    dcc.Input(id='date5', type='text', value='2022-06-21'),
+    dcc.Input(id='date6', type='text', value='2022-06-22'),
+    html.Button(id='Submit3', children='Submit'),
+    html.Div(id='output-container-button5',
+             children='Enter a value and press submit'),
+
+    dcc.Checklist(
+        id="checklist",
+        options=[
+            {'label': 'line1', 'value': 'line1'},
+            {'label': 'line2', 'value': 'line2'},
+            {'label': 'line3', 'value': 'line3'}
+        ],
+        labelStyle={'display': 'block'},
+        value=[]
+    ),
+
+])
+# DASH CALLBACK
+@dash.callback(
+    dash.dependencies.Output('graph_4', 'figure'),
+    [dash.dependencies.Input('input-box3', 'value')],
+    [dash.dependencies.Input('date1', 'value')],
+    [dash.dependencies.Input('date2', 'value')],
+    [dash.dependencies.Input('input-box4', 'value')],
+    [dash.dependencies.Input('date3', 'value')],
+    [dash.dependencies.Input('date4', 'value')],
+    [dash.dependencies.Input('input-box5', 'value')],
+    [dash.dependencies.Input('date5', 'value')],
+    [dash.dependencies.Input('date6', 'value')],
+    [dash.dependencies.State('Submit1', 'value')],
+    [dash.dependencies.State('Submit2', 'value')],
+    [dash.dependencies.State('Submit3', 'value')]
+)
+
+def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1, s2, s3):
+    # print ("----")
+    # print ( in1 )
+    # print ( date5 + "" + date6)
+    #
+    # print ("----")
+
+    # print(" number of clicks", n_clicks)
+    # print(" value-->", value)
+    # VALUE IS FROM HTML FORM INPUT
+#    crypto_name = value
+    crypto_name = 'BITMEX:LTCUSD'
+    # print ("in1:", in1)
+    # if ( crypto_name == "" ):
+    #     crytoname = "BITMEX:ETHUSD_ETH"
+
+    mycursor = mydb.cursor()
+    # QUERY DATA FROM DB
+    mycursor.execute("SELECT * from coin_data WHERE cname = %s", (crypto_name,))
+    myresult = mycursor.fetchall()
+    # print(myresult)
+    # SETTING COLLUMNS FOR DF
+    pd1 = pd.DataFrame(myresult, columns=['crid', 'cname', 'cdate', 'price', 'lows', 'highs'])
+
+    # line
+    pd1['cdate'] = pd.to_datetime(pd1['cdate'])
+
+    # CHANGING DATES FROM STRINGS TO ORDINAL INTS
+    pd1['cdate_ord'] = pd1['cdate'].apply(lambda x: x.toordinal())
+    # RESHAPING FOR LINEAR REG
+    x = pd1['cdate_ord'].to_numpy().reshape((-1, 1))
+    y = pd1['price'].to_numpy()
+
+    pd.set_option('display.max_rows', None)
+
+    # fig = go.Figure()
+    # fig.add_trace(go.Scatter(x=pd1.cdate, y=pd1.lows))
+
+    ## add second line ##########################################
+
+    # print("in2:", in2)
+    # if (crypto_name == "None"):
+    #     crytoname = "BITMEX:ETHUSD_ETH"
+
+    cryptoname2 = "BITMEX:BLTC"
+
+    mycursor2 = mydb.cursor()
+
+    # QUERY DATA FROM DB
+    mycursor2.execute("SELECT * from coin_data WHERE cname = %s", (cryptoname2,))
+    myresult = mycursor2.fetchall()
+
+    # SETTING COLLUMNS FOR DF
+    pd2 = pd.DataFrame(myresult, columns=['crid', 'cname', 'cdate', 'price', 'lows', 'highs'])
+
+    # line
+    pd2['cdate'] = pd.to_datetime(pd2['cdate'])
+
+    # print ( pd2.price)
+
+    ## add second line ##########################################
+
+    crypto_name = "BITMEX:ETHUSD_ETH"
+    # print("in3:", in2)
+    # if (crypto_name == "None"):
+    #     crytoname = "BITMEX:ETHUSD_ETH"
+
+    cryptoname = "BITMEX:ETHUSD_ETH"
+
+    mycursor = mydb.cursor()
+
+    # QUERY DATA FROM DB
+    mycursor.execute("SELECT * from coin_data WHERE cname = %s", (crypto_name,))
+    myresult = mycursor.fetchall()
+
+    # SETTING COLLUMNS FOR DF
+    pd3 = pd.DataFrame(myresult, columns=['crid', 'cname', 'cdate', 'price', 'lows', 'highs'])
+
+    # line
+    pd3['cdate'] = pd.to_datetime(pd3['cdate'])
+
+    # print(pd3.cdate)
+    pd4= pd.concat([pd1.cdate,pd1.price,pd2.price,pd3.price],axis=1)
+    pd4['p_change3']=pd3['price'].pct_change()
+    pd4['p_change2']=pd2['price'].pct_change()
+    pd4['p_change1']=pd1['price'].pct_change()
+
+    # print(pd4)
+    # print(pd2.price)
+
+    fig=px.scatter(pd4, x='cdate', y=['p_change3','p_change2','p_change1'], trendline='ols')
+    # fig.update_layout(
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     font_color='WHITE'
+    # )
+    return fig
+    # return p1
