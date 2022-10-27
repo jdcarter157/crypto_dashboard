@@ -72,7 +72,11 @@ layout = html.Div([
         options=[
             {'label': 'line1', 'value': 'line1'},
             {'label': 'line2', 'value': 'line2'},
-            {'label': 'line3', 'value': 'line3'}
+            {'label': 'line3', 'value': 'line3'},
+            {'label': 'line4', 'value': 'line4'},
+            {'label': 'line5', 'value': 'line5'},
+            {'label': 'line6', 'value': 'line6'}
+
         ],
         labelStyle={'display': 'block'},
         value=[]
@@ -93,10 +97,11 @@ layout = html.Div([
     [dash.dependencies.Input('date6', 'value')],
     [dash.dependencies.State('Submit1', 'value')],
     [dash.dependencies.State('Submit2', 'value')],
-    [dash.dependencies.State('Submit3', 'value')]
+    [dash.dependencies.State('Submit3', 'value')],
+    [dash.dependencies.Input('checklist','value')]
 )
 
-def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1, s2, s3):
+def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1, s2, s3,checklist):
     # print ("----")
     # print ( in1 )
     # print ( date5 + "" + date6)
@@ -192,5 +197,36 @@ def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1,
     #     paper_bgcolor='rgba(0,0,0,0)',
     #     font_color='WHITE'
     # )
+
+    # update figure on checkbox toggle
+    # fig.update_traces(marker_color="RoyalBlue",
+    #                   selector=dict(marker_color="MediumPurple"))
+    print(checklist)
+    # allowing users to hide and unhide traces for better view using checklist
+    if checklist == ['line1']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+    elif checklist==['line2']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+    elif checklist==['line3']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+    elif checklist==['line1','line2']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+    elif checklist==['line2','line1']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+    elif checklist==['line1','line3']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+    elif checklist==['line3','line1']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+    elif checklist==['line2','line3']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+    elif checklist==['line3','line2']:
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+
     return fig
     # return p1
