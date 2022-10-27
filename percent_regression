@@ -51,28 +51,23 @@ layout = html.Div([
     html.Div(id='output-container-button',
              children=''),
     dcc.Input(id='input-box3', type='text'),
-    dcc.Input(id='date1', type='text', value='2022-06-21'),
-    dcc.Input(id='date2', type='text', value='2022-06-22'),
-    html.Button(id='Submit1', children='Submit'),
 
     dcc.Input(id='input-box4', type='text'),
-    dcc.Input(id='date3', type='text', value='2022-06-21'),
-    dcc.Input(id='date4', type='text', value='2022-06-22'),
-    html.Button(id='Submit2', children='Submit'),
+
+
 
     dcc.Input(id='input-box5', type='text'),
-    dcc.Input(id='date5', type='text', value='2022-06-21'),
-    dcc.Input(id='date6', type='text', value='2022-06-22'),
-    html.Button(id='Submit3', children='Submit'),
+    dcc.Input(id='date1', type='text', value='2022-06-21'),
+    html.Button(id='Submit1', children='Submit'),
     html.Div(id='output-container-button5',
              children='Enter a value and press submit'),
 
     dcc.Checklist(
         id="checklist",
         options=[
-            {'label': 'line1', 'value': 'line1'},
-            {'label': 'line2', 'value': 'line2'},
-            {'label': 'line3', 'value': 'line3'},
+            {'label': 'ETH', 'value': 'line1'},
+            {'label': 'BLTC', 'value': 'line2'},
+            {'label': 'LTC', 'value': 'line3'},
             {'label': 'line4', 'value': 'line4'},
             {'label': 'line5', 'value': 'line5'},
             {'label': 'line6', 'value': 'line6'}
@@ -86,22 +81,18 @@ layout = html.Div([
 # DASH CALLBACK
 @dash.callback(
     dash.dependencies.Output('graph_4', 'figure'),
-    [dash.dependencies.Input('input-box3', 'value')],
     [dash.dependencies.Input('date1', 'value')],
-    [dash.dependencies.Input('date2', 'value')],
+    [dash.dependencies.Input('input-box3', 'value')],
+
     [dash.dependencies.Input('input-box4', 'value')],
-    [dash.dependencies.Input('date3', 'value')],
-    [dash.dependencies.Input('date4', 'value')],
+
     [dash.dependencies.Input('input-box5', 'value')],
-    [dash.dependencies.Input('date5', 'value')],
-    [dash.dependencies.Input('date6', 'value')],
     [dash.dependencies.State('Submit1', 'value')],
-    [dash.dependencies.State('Submit2', 'value')],
-    [dash.dependencies.State('Submit3', 'value')],
+
     [dash.dependencies.Input('checklist','value')]
 )
 
-def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1, s2, s3,checklist):
+def update_output( in1, date1,  in2, in3 , s1,checklist):
     # print ("----")
     # print ( in1 )
     # print ( date5 + "" + date6)
@@ -184,14 +175,14 @@ def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1,
 
     # print(pd3.cdate)
     pd4= pd.concat([pd1.cdate,pd1.price,pd2.price,pd3.price],axis=1)
-    pd4['p_change3']=pd3['price'].pct_change()
-    pd4['p_change2']=pd2['price'].pct_change()
-    pd4['p_change1']=pd1['price'].pct_change()
+    pd4['ETH']=pd3['price'].pct_change()
+    pd4['BLTC']=pd2['price'].pct_change()
+    pd4['LTC']=pd1['price'].pct_change()
 
     # print(pd4)
     # print(pd2.price)
 
-    fig=px.scatter(pd4, x='cdate', y=['p_change3','p_change2','p_change1'], trendline='ols')
+    fig=px.scatter(pd4, x='cdate', y=['ETH','BLTC','LTC'], trendline='ols')
     # fig.update_layout(
     #     plot_bgcolor='rgba(0,0,0,0)',
     #     paper_bgcolor='rgba(0,0,0,0)',
@@ -204,29 +195,29 @@ def update_output( in1, date1, date2, in2, date3, date4, in3, date5, date6 , s1,
     print(checklist)
     # allowing users to hide and unhide traces for better view using checklist
     if checklist == ['line1']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'ETH'}))
     elif checklist==['line2']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
     elif checklist==['line3']:
         fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
     elif checklist==['line1','line2']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'ETH'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
     elif checklist==['line2','line1']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'ETH'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
     elif checklist==['line1','line3']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'ETH'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
     elif checklist==['line3','line1']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change1'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'ETH'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'LTC'}))
     elif checklist==['line2','line3']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'LTC'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
     elif checklist==['line3','line2']:
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change3'}))
-        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'p_change2'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'LTC'}))
+        fig.update_traces(overwrite=False, marker={"opacity": 0},selector=({'name':'BLTC'}))
 
     return fig
     # return p1
