@@ -38,7 +38,9 @@ mydb = mysql.connector.connect(
 dash.register_page(__name__,)
 def update_city_selected(input_value):
     return f'You selected: {input_value}'
-
+years=['2022','2021','2020','2019','2018','2017','2016','2015','2014','2013']
+months=['01','02','03','04','05','06','07','08','09','10','11','12']
+days=['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31']
 # HTML COMPONENTS
 layout = html.Div([
     html.H4(children='Simple Linear Regression',
@@ -47,18 +49,8 @@ layout = html.Div([
             }),
     dcc.Graph(id="graph_4", figure={"layout": {"height": 300, "width": 700}, }),
 
-
     html.Div(id='output-container-button',
              children=''),
-    dcc.Input(id='input-box3', type='text'),
-
-    dcc.Input(id='input-box4', type='text'),
-
-
-
-    dcc.Input(id='input-box5', type='text'),
-    dcc.Input(id='date1', type='text', value='2022-06-21'),
-    html.Button(id='Submit1', children='Submit'),
     html.Div(id='output-container-button5',
              children='Enter a value and press submit'),
 
@@ -76,23 +68,21 @@ layout = html.Div([
         labelStyle={'display': 'block'},
         value=[]
     ),
+    dcc.Dropdown(id="year_drop",multi=False,value='2022',options=years),
+    dcc.Dropdown(id="month_drop", multi=False, value='06', options=months),
+    dcc.Dropdown(id="day_drop", multi=False, value='21', options=days)
 
 ])
 # DASH CALLBACK
 @dash.callback(
     dash.dependencies.Output('graph_4', 'figure'),
-    [dash.dependencies.Input('date1', 'value')],
-    [dash.dependencies.Input('input-box3', 'value')],
-
-    [dash.dependencies.Input('input-box4', 'value')],
-
-    [dash.dependencies.Input('input-box5', 'value')],
-    [dash.dependencies.State('Submit1', 'value')],
-
+    dash.dependencies.Input('year_drop','value'),
+    dash.dependencies.Input('month_drop', 'value'),
+    dash.dependencies.Input('day_drop', 'value'),
     [dash.dependencies.Input('checklist','value')]
 )
 
-def update_output( in1, date1,  in2, in3 , s1,checklist):
+def update_output(year_drop,month_drop,day_drop,checklist):
     # print ("----")
     # print ( in1 )
     # print ( date5 + "" + date6)
