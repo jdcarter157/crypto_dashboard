@@ -23,7 +23,7 @@ import dash
 from dash import html, dcc, callback, Input, Output
 
 mydb = mysql.connector.connect(
-    host="192.168.0.122",
+    host=" ",
     user="crypto",
     password="crypto",
     auth_plugin="mysql_native_password",
