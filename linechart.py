@@ -28,11 +28,11 @@ import random
 #    database="ecoins"
 # )
 mydb = mysql.connector.connect(
-    host="192.168.0.122",
+    host="",
     user="crypto",
-    password="crypto",
+    password="",
     auth_plugin="mysql_native_password",
-    database="coindata"
+    database=""
 )
 
 mycursor = mydb.cursor()
